@@ -7,10 +7,10 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <Cart />
       <main>
         <Meals />
       </main>
-      <Cart />
     </div>
   );
 }
