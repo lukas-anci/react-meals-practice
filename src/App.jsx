@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className="App">
-      {cartIsShown && <Cart />}
+      {cartIsShown && <Cart onClose={hideCartHandler} />}
       <Header onShowCart={showCartHandler} />
       <main>
         <Meals />
