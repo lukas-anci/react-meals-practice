@@ -16,6 +16,8 @@ const cartReducer = (state, action) => {
 
       // 2 keliai
       /// 1a itemas jau yra krepselyje mes norim padidinti jo kieki ir totalAmount
+
+      // galima perdaryti i modernesni variatna
       const existingCartItemIndex = state.items.findIndex(
         (cartItem) => cartItem.id === item.id
       );
@@ -44,11 +46,33 @@ const cartReducer = (state, action) => {
 
     case 'REMOVE':
       // surasti item krepselyje ir
-      // 1a jei item yra tik vienas krepselyje - pasalinti visa item
-      // 2a jei daugiau tai pamazinam kieki
-      // totalAmount
-      throw new Error('remove item not completed yet');
+      // masyvas yra state.items
+      // find itemId yra action.id
+      console.log({ items: state.items, id: action.id });
+      const id = action.id;
 
+      const findItem = state.items.find((item) => item.id === id);
+      console.log(findItem.amount);
+      // 1a jei item yra tik vienas krepselyje - pasalinti visa item
+      if (findItem.amount === 1) {
+        state.items.filter((items) => items.id !== id);
+      }
+      if (findItem.amount > 1) {
+        return {
+          ...state.items,
+          amount: findItem.amount - 1,
+        };
+      }
+
+      // 2a jei daugiau tai pamazinam kieki
+
+      // totalAmount
+
+      return state;
+    //  {
+    //   items: updatedItemz,
+    //   totalAmount: updatedTotalAmounts,
+    // };
     default:
       return state;
   }
