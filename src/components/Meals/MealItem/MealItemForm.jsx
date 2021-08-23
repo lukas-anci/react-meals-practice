@@ -15,7 +15,7 @@ const MealItemForm = (props) => {
       return setAmountIsValid(false);
     console.log('ivest', formQty);
 
-    props.onAddItem(formQty);
+    props.onAddItem(+formQty);
   };
 
   const inputValueHandler = (e) => {
