@@ -6,12 +6,25 @@ import CartItem from './CartItem';
 
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
-  console.log(cartCtx.items);
+
+  const cartItemHandler = (item) => {
+    console.log('cartItemHandler', item);
+  };
+  const cartItemRemoveHandler = (id) => {
+    console.log('cartItemRemoveHandler', id);
+  };
+
   const cartItems = (
     <ul className={classes['cart-items']}>
       {cartCtx.items.map((item) => (
         // Create CartItem component
-        <CartItem key={item.id} {...item} />
+        <CartItem
+          key={item.id}
+          // bind suteikia argumenta ka negalim jo prideti
+          onAddItem={cartItemHandler.bind(null, item)}
+          onRemoveItem={cartItemRemoveHandler.bind(null, item.id)}
+          {...item}
+        />
       ))}
     </ul>
   );
