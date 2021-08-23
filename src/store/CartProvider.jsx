@@ -11,13 +11,31 @@ const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD':
       // visa pridejimo i krepseli logika ir grazinti nauja state versija
+      const { item } = action;
+      const updatedTotalAmount = state.totalAmount + item.price * item.amount;
 
       // 2 keliai
       /// 1a itemas jau yra krepselyje mes norim padidinti jo kieki ir totalAmount
-      /// 2a itemo nera krepsely mes ji idedam
-      const { item } = action;
-      const updatedItems = [...state.items, item];
-      const updatedTotalAmount = state.totalAmount + item.price * item.amount;
+      const existingCartItemIndex = state.items.findIndex(
+        (cartItem) => cartItem.id === item.id
+      );
+
+      const existingCartItem = state.items[existingCartItemIndex];
+
+      let updatedItems;
+      if (existingCartItem) {
+        const updatedItem = {
+          ...existingCartItem,
+          amount: existingCartItem.amount + item.amount,
+        };
+
+        updatedItems = [...state.items];
+        updatedItems[existingCartItemIndex] = updatedItem;
+      } else {
+        /// 2a itemo nera krepsely mes ji idedam
+
+        updatedItems = [...state.items, item];
+      }
 
       return {
         items: updatedItems,

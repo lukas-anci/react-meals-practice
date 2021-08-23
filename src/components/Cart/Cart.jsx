@@ -9,9 +9,11 @@ const Cart = (props) => {
 
   const cartItemHandler = (item) => {
     console.log('cartItemHandler', item);
+    cartCtx.addItem(item);
   };
   const cartItemRemoveHandler = (id) => {
     console.log('cartItemRemoveHandler', id);
+    cartCtx.removeItem(id);
   };
 
   const cartItems = (
