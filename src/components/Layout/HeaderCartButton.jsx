@@ -8,7 +8,11 @@ const HeaderCartButton = (props) => {
   const cartCtx = useContext(CartContext);
 
   // TODO:count all items
-  const numberOfCartItems = cartCtx.items.length;
+  const numberOfCartItems = cartCtx.items.reduce(
+    (total, currObj) => total + currObj.amount,
+    0
+  );
+  console.log('cart items', cartCtx.items);
   return (
     <button onClick={props.onClick} className={classes.button}>
       <span className={classes.icon}>

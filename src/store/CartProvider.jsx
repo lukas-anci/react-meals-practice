@@ -1,27 +1,25 @@
-import CartContext from './cart-context';
 import { useReducer } from 'react';
+import CartContext from './cart-context';
 
 const defaultCartState = {
   items: [],
   totalAmount: 0,
 };
 
-// pagrindine reducer funkcija===========
+// pagrindine reducer funkcija ==================
+// action.item === { id: "c1", name: "Sushi", amount: 2, price: 12.99 }
 const cartReducer = (state, action) => {
   switch (action.type) {
-    case 'ADD':
-      // visa pridejimo i krepseli logika ir grazinti nauja state versija
+    case 'ADD': {
+      // visa pridejimo i krepseli logika ir grazinti nauja sate versija
+      // 2 keliai
       const { item } = action;
       const updatedTotalAmount = state.totalAmount + item.price * item.amount;
-
-      // 2 keliai
-      /// 1a itemas jau yra krepselyje mes norim padidinti jo kieki ir totalAmount
-
-      // galima perdaryti i modernesni variatna
+      //// 1a itemas jau yra krepselyje mes norim padinti jo kiieki ir totalAmount
+      // galima perdaryti i modernesni varianta.
       const existingCartItemIndex = state.items.findIndex(
         (cartItem) => cartItem.id === item.id
       );
-
       const existingCartItem = state.items[existingCartItemIndex];
 
       let updatedItems;
@@ -30,12 +28,10 @@ const cartReducer = (state, action) => {
           ...existingCartItem,
           amount: existingCartItem.amount + item.amount,
         };
-
         updatedItems = [...state.items];
         updatedItems[existingCartItemIndex] = updatedItem;
       } else {
-        /// 2a itemo nera krepsely mes ji idedam
-
+        //// 2a itemo nera krepsely mes ji idedam
         updatedItems = [...state.items, item];
       }
 
@@ -43,36 +39,32 @@ const cartReducer = (state, action) => {
         items: updatedItems,
         totalAmount: updatedTotalAmount,
       };
-
+    }
     case 'REMOVE':
       // surasti item krepselyje ir
-      // masyvas yra state.items
-      // find itemId yra action.id
-      console.log({ items: state.items, id: action.id });
-      const id = action.id;
-
-      const findItem = state.items.find((item) => item.id === id);
-      console.log(findItem.amount);
-      // 1a jei item yra tik vienas krepselyje - pasalinti visa item
-      if (findItem.amount === 1) {
-        state.items.filter((items) => items.id !== id);
-      }
-      if (findItem.amount > 1) {
-        return {
-          ...state.items,
-          amount: findItem.amount - 1,
-        };
-      }
-
+      const existingCartItem = state.items.find(
+        (cartItem) => cartItem.id === action.id
+      );
+      let updatedItems;
+      // total amount
+      const updatedTotalAmount = state.totalAmount - existingCartItem.price;
       // 2a jei daugiau tai pamazinam kieki
+      if (existingCartItem.amount > 1) {
+        updatedItems = state.items.map((cartItem) => {
+          if (cartItem.id === action.id)
+            return { ...cartItem, amount: cartItem.amount - 1 };
+          return cartItem;
+        });
+      } else if (existingCartItem.amount === 1) {
+        updatedItems = state.items.filter(
+          (cartItem) => cartItem.id !== action.id
+        );
+      }
 
-      // totalAmount
-
-      return state;
-    //  {
-    //   items: updatedItemz,
-    //   totalAmount: updatedTotalAmounts,
-    // };
+      return {
+        items: updatedItems,
+        totalAmount: updatedTotalAmount,
+      };
     default:
       return state;
   }
@@ -83,6 +75,7 @@ const CartProvider = (props) => {
     cartReducer,
     defaultCartState
   );
+
   const addItemToCartHandler = (item) => {
     // add to cart action
     dispatchCartAction({ type: 'ADD', item: item });
@@ -97,6 +90,7 @@ const CartProvider = (props) => {
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
   };
+
   return (
     <CartContext.Provider value={cartContext}>
       {props.children}
